@@ -2,7 +2,7 @@ from transformers import ZeroShotClassificationPipeline, AutoModelForSequenceCla
 from lib.ModelLocalCache import loadModel
 
 defaultModelName = "MoritzLaurer/DeBERTa-v3-large-mnli-fever-anli-ling-wanli"
-# other options:  "facebook/bart-large-mnli"
+# other options: "facebook/bart-large-mnli"
 
 class Classifier:
     def __init__(self, modelName=defaultModelName, device="cpu"):
@@ -13,11 +13,11 @@ class Classifier:
         self.model = model
         self.pipe = ZeroShotClassificationPipeline(model=model, tokenizer=tokenizer, device=0)
 
-    def classifierBinary(self, input, label):
+    def classifyBinary(self, input, label):
         candidateLabels = [f"not {label}", f"{label}"]
         result = self.pipe(input, candidateLabels, multi_label=False)
         return result['labels'], result['scores']
 
-    def classifierGeneral(self, input, candidateLabels, multiLabel=False):
+    def classifyGeneral(self, input, candidateLabels, multiLabel=False):
         result = self.pipe(input, candidateLabels, multi_label=multiLabel)
         return result['labels'], result['scores']

@@ -1,6 +1,6 @@
-from Classifier import Classifier
+from Summarizer import Summarizer
 
-newsClassifier = Classifier(device="cuda")
+newSummarizer = Summarizer(device="cuda")
 
 inputs ="""Twitter staff have started to post online that they believe they have lost their jobs, ahead of an announcement by the company later on Friday.
 The social media giant says it will inform its staff whether they are still employed after Elon Musk's takeover.
@@ -20,7 +20,5 @@ BBC News
 """
 # https://www.bbc.com/news/technology-63495125
 
-newslabels = ['stock market', 'finance', 'economy', 'science', 'politics', 'real estate', 'energy price', 'technology']
-print(newsClassifier.classifyGeneral(inputs, newslabels, multiLabel=True))
-print(newsClassifier.classifyBinary(inputs, "economy"))
-print(newsClassifier.classifyBinary(inputs, "real estate"))
+
+print(newSummarizer.summarize(inputs))
