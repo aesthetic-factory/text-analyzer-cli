@@ -3,7 +3,10 @@ Interactive CLI using transformer models
 ## Prerequisite
 Install [Anaconda](https://docs.anaconda.com/anaconda/install/index.html)
  
-Create a new environment
+## Create a new environment
+conda create --prefix env python=3.9
+conda activate env
+
 ### CPU Only
 ```bash
 conda install -c conda-forge transformers[torch] -y

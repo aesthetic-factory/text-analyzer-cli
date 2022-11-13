@@ -1,3 +1,7 @@
+# Classifier.py
+"""
+Class to perform transformer
+"""
 from transformers import ZeroShotClassificationPipeline, AutoModelForSequenceClassification
 from lib.ModelLocalCache import loadModel
 

@@ -1,4 +1,4 @@
-from Classifier import Classifier
+from server.Classifier import Classifier
 
 newsClassifier = Classifier(device="cuda")
 

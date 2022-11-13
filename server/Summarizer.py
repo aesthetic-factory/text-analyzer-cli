@@ -1,3 +1,7 @@
+# Summarizer.py
+"""
+Class to perform transformer
+"""
 from transformers import SummarizationPipeline, AutoModelForSeq2SeqLM
 from lib.ModelLocalCache import loadModel
 
