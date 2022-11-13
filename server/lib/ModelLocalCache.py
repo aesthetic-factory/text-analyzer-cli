@@ -1,8 +1,5 @@
-# ModelLocalCache.py
-"""
-Class to perform caching on model
-"""
 import time
+import torch
 from os.path import exists
 from transformers import AutoModel, AutoTokenizer
 from pathlib import Path
@@ -16,14 +13,19 @@ def loadModel(modelName, tokenizerLoader=AutoTokenizer, modelLoader=AutoModel, d
     localCachePath = f"{cacheDir}{localFileName}_{device}"
 
     if exists(localCachePath):
-        print("Loading from cache")
+        print(f"Loading from cache: {localCachePath}")
         tokenizer = tokenizerLoader.from_pretrained(localCachePath)
-        model = modelLoader.from_pretrained(localCachePath).to(device)
-        # model = modelLoader.from_pretrained(localCachePath, torch_dtype=torch.bfloat16)
+        if device == "cuda":
+            model = modelLoader.from_pretrained(localCachePath, torch_dtype=torch.bfloat16).to(device)
+        else:
+            model = modelLoader.from_pretrained(localCachePath)
     else:
-        print("Downloading from online")
+        print(f"Downloading {modelName} from online")
         tokenizer = tokenizerLoader.from_pretrained(f"{modelName}")
-        model = modelLoader.from_pretrained(f"{modelName}")
+        if device == "cuda":
+            model = modelLoader.from_pretrained(f"{modelName}", torch_dtype=torch.bfloat16).to(device)
+        else:
+            model = modelLoader.from_pretrained(f"{modelName}")
 
         tokenizer.save_pretrained(localCachePath)
         model.save_pretrained(localCachePath)
