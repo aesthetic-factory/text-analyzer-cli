@@ -15,24 +15,24 @@ def query():
     )
 
 
-@app.route("/api/classifier/general/<device>/<text>")
-def classify_general(device, text):
+@app.route("/api/classifier/general/<device>/<article>")
+def classify_general(device, article):
     newsClassifier = Classifier(device=device)
-    results = newsClassifier.classifyGeneral(text, news_labels, multiLabel=True)
+    results = newsClassifier.classifyGeneral(article, news_labels, multiLabel=True)
     return str(results)
 
 
-@app.route("/api/classifier/binary/<device>/<label>/<text>")
-def classify_binary(device, label, text):
+@app.route("/api/classifier/binary/<device>/<label>/<article>")
+def classify_binary(device, label, article):
     newsClassifier = Classifier(device=device)
-    results = newsClassifier.classifyBinary(text, label)
+    results = newsClassifier.classifyBinary(article, label)
     return str(results)
 
 
-@app.route("/api/summarizer/<device>/<text>")
-def summarize(device, text):
+@app.route("/api/summarizer/<device>/<article>")
+def summarize(device, article):
     newSummarizer = Summarizer(device=device)
-    return newSummarizer.summarize(text)
+    return newSummarizer.summarize(article)
 
 
 if __name__ == '__main__':
