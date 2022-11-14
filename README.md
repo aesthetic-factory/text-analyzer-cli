@@ -1,33 +1,50 @@
 # text-analyzer-cli
-Interactive CLI using transformer models
+Python web service based on Flask framework to analyze text with transformer models.
+
 ## Prerequisite
-Install [Anaconda](https://docs.anaconda.com/anaconda/install/index.html)
+[Anaconda](https://docs.anaconda.com/anaconda/install/index.html) / [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
  
-## Create a new environment
-conda create --prefix env python=3.9
-conda activate env
+### Setup
 
-### CPU Only
+Miniconda may have write permission error when installing packages
 ```bash
-conda install -c conda-forge transformers[torch] -y
+conda env create --file environment.yml
+conda activate ./env
 ```
 
-### CUDA
-```bash
-conda install pytorch torchvision torchaudio pytorch-cuda=11.7 -c pytorch -c nvidia -y
-conda install -c conda-forge transformers -y
+Output current conda environment
+```python
+conda env export > environment.yml
 ```
+
 ## Usage
-TODO
+
+REST API currently provided in the web service
+
+| Method | URI                                               | Description                                                                |
+| :---   | :---                                              | :---                                                                       |
+| GET    | /api/classifier/general/{device}/{article}        | Classify the article to determine the possibilities for the label          |
+| GET    | /api/classifier/binary/{device}/{label}/{article} | Classify the article to determine the possibilities for each of the labels |
+| GET    | /api/summarizer/{device}/{article}                | Summarize news articles and other documents                                |
+
+Parameters:
+
+| Parameter | Data Type    | Description                  |
+| :---      | :---         | :---                         |
+| device    | "cpu"/"cuda" | Switch between CPU/GPU on ML |
+| label     | String       | Label for classification     |
+| article   | String       | Article for analysis       |
 
 ## Test
-### Classifier
-```bash
-python test_classifier.py
+
+Start web service
+```python
+python server/app.py
 ```
-### Summarizer
-```bash
-python test_summarizer.py
+
+Invoke REST API with testing tool (i.e. Postman)
+```
+localhost:4000/api/classifier/general/cuda/article
 ```
 
 ## Clear Cache
