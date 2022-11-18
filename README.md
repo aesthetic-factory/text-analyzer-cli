@@ -21,11 +21,11 @@ conda env export > environment.yml
 
 REST API currently provided in the web service
 
-| Method | URI                                               | Description                                                                |
-| :---   | :---                                              | :---                                                                       |
-| GET    | /api/classifier/general/{device}/{article}        | Classify the article to determine the possibilities for the label          |
-| GET    | /api/classifier/binary/{device}/{label}/{article} | Classify the article to determine the possibilities for each of the labels |
-| GET    | /api/summarizer/{device}/{article}                | Summarize news articles and other documents                                |
+| Method | URI                                     | Message(JSON) format     | Description                                                                |
+| :---   | :---                                    | :---                     | :---                                                                       |
+| POST   | /api/classifier/general/{device}        | { 'article' : 'string' } | Classify the article to determine the possibilities for the label          |
+| POST   | /api/classifier/binary/{device}/{label} | { 'article' : 'string' } | Classify the article to determine the possibilities for each of the labels |
+| POST   | /api/summarizer/{device}/{article}      | { 'article' : 'string' } | Summarize news articles and other documents                                |
 
 Parameters:
 
@@ -33,7 +33,7 @@ Parameters:
 | :---      | :---         | :---                         |
 | device    | "cpu"/"cuda" | Switch between CPU/GPU on ML |
 | label     | String       | Label for classification     |
-| article   | String       | Article for analysis       |
+| article   | String       | Article for analysis         |
 
 ## Test
 
