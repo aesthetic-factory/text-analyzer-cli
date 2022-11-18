@@ -1,24 +1,28 @@
-import logo from './logo.svg';
+import React from 'react';
+import {
+  Route,
+  BrowserRouter as Router,
+  Routes, NavLink
+} from "react-router-dom";
+import AnalyzeArticle from './AnalyzeArticle';
 import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="App">
+        <div className="page-container">
+          <div className="header-panel">
+            <h1 style={{ marginLeft: "0px" }}>Text Analysis with Machine Learning</h1>
+          </div>
+          <div className="main-panel" style={{ display: "block", paddingBottom: "50px" }}>
+            <Routes>
+              <Route path="/" exact element={<AnalyzeArticle />}></Route>
+            </Routes>
+          </div>
+        </div>
+      </div>
+    </Router>
   );
 }
 
