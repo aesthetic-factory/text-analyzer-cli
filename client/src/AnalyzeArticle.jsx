@@ -3,7 +3,6 @@ import { React, useState } from 'react';
 const SERVER_HOST = process.env.REACT_APP_SERVER_HOST;
 
 const AnalyzeArticle = () => {
-    const [notification, setNotification] = useState(undefined);
     const [response, setResponse] = useState(undefined);
 
     const {
@@ -19,7 +18,6 @@ const AnalyzeArticle = () => {
 
     const handleAnalyze = (event) => {
         event.preventDefault();
-        setNotification(null);
         
         if (analyze != null && device != null) {
             if (analyze == 'summarizer') {
@@ -39,14 +37,11 @@ const AnalyzeArticle = () => {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ article: `${article}`})
-        }
-        setResponse(
-            fetch(`${SERVER_HOST}/api/summarizer/${device}`, requestOptions)
-            .then(response => response.json())
-            .then(result => result['summary'])
-            .then(result => console.log(result))
-            .catch(error => JSON.stringify({ error: error}))
-            );
+        }    
+        fetch(`${SERVER_HOST}/api/summarizer/${device}`, requestOptions)
+        .then(response => response.json())
+        .then(result => setResponse(result['summary']))
+        .catch(error => JSON.stringify({ error: error}));
     }
     
     async function ClassifyArticleWithLabel({ device, label, article }) {
@@ -57,8 +52,7 @@ const AnalyzeArticle = () => {
         }
         fetch(`${SERVER_HOST}/api/classifier/binary/${device}/${label}`, requestOptions)
         .then(response => response.json())
-        .then(result => result['classification'])
-        .then(result => console.log(result))
+        .then(result => setResponse(result['classification']))
         .catch(error => JSON.stringify({ error: error}));
     }
     
@@ -68,18 +62,10 @@ const AnalyzeArticle = () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ article: `${article}` })
         }
-        setResponse(
-            fetch(`${SERVER_HOST}/api/classifier/general/${device}`, requestOptions)
-            .then(response => response.json())
-            .then(result => result['classification'])
-            .then(result => console.log(result))
-            .catch(error => JSON.stringify({ error: error}))
-            );
-    }
-
-    const handleChange = (event) => {
-        console.log(response);
-        event.target.value = response;
+        fetch(`${SERVER_HOST}/api/classifier/general/${device}`, requestOptions)
+        .then(response => response.json())
+        .then(result => setResponse(result['classification']))
+        .catch(error => JSON.stringify({ error: error}));
     }
 
     return (
@@ -121,10 +107,14 @@ const AnalyzeArticle = () => {
                                 <td><textarea name="article" onChange={(event) => setArticle(event.target.value)}  rows={10} cols={80} /></td>
                             </tr>
                             <tr>
-                                <td><button type="submit" className="submit">Analyze</button></td>
+                                <td><button type="submit" className="submit" value={response}>Analyze</button></td>
                             </tr>
                         </tbody>
                     </table>
+                    <div>
+                        <h2>Analyzing Results</h2>
+                        <textarea className="analysisResults" value={response} readOnly rows={10} cols={80}></textarea>
+                    </div>
                 </form>
             </div>
         </>
