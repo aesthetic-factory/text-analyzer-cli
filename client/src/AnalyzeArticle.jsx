@@ -23,7 +23,7 @@ const AnalyzeArticle = () => {
             if (analyze == 'summarizer') {
                 SummarizeArticle({ article, device });
             } else {
-                if (label != null) {
+                if (label == null) {
                     ClassifyArticle({ device, article });
                 } else {
                     ClassifyArticleWithLabel({ device, label, article });
@@ -48,7 +48,7 @@ const AnalyzeArticle = () => {
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ article: `article` })
+            body: JSON.stringify({ article: `${article}` })
         }
         fetch(`${SERVER_HOST}/api/classifier/binary/${device}/${label}`, requestOptions)
         .then(response => response.json())
