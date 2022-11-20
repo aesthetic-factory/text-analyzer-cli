@@ -9,12 +9,16 @@ Python web service based on Flask framework to analyze text with transformer mod
 Miniconda may have write permission error when installing packages
 ```bash
 conda env create --file environment.yml
-conda activate ./env
+conda activate env
 ```
 
 Output current conda environment
 ```python
 conda env export > environment.yml
+```
+
+```python
+pip list --format=freeze > requirements.txt
 ```
 
 ## Usage
@@ -45,6 +49,18 @@ python server/app.py
 Invoke REST API with testing tool (i.e. Postman)
 ```
 localhost:4000/api/classifier/general/cuda/article
+```
+
+## Build Docker file
+
+Create a Docker local registry
+```
+docker run -d -p 5000:5000 --restart=always --name registry registry:2
+```
+
+Build docker image locally
+```
+docker build -f dockerfile -t text-analyzer-app .
 ```
 
 ## Clear Cache
