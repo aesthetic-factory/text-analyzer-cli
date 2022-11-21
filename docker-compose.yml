@@ -1,0 +1,7 @@
+version: '1'
+
+services:
+  text-analyzer-app:
+    image: text-analyzer-app
+    ports:
+      - 4000:4000

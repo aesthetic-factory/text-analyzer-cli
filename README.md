@@ -9,7 +9,7 @@ Python web service based on Flask framework to analyze text with transformer mod
 Miniconda may have write permission error when installing packages
 ```bash
 conda env create --file environment.yml
-conda activate ./env
+conda activate env
 ```
 
 Output current conda environment
@@ -17,15 +17,19 @@ Output current conda environment
 conda env export > environment.yml
 ```
 
+```python
+pip list --format=freeze > requirements.txt
+```
+
 ## Usage
 
 REST API currently provided in the web service
 
-| Method | URI                                               | Description                                                                |
-| :---   | :---                                              | :---                                                                       |
-| GET    | /api/classifier/general/{device}/{article}        | Classify the article to determine the possibilities for the label          |
-| GET    | /api/classifier/binary/{device}/{label}/{article} | Classify the article to determine the possibilities for each of the labels |
-| GET    | /api/summarizer/{device}/{article}                | Summarize news articles and other documents                                |
+| Method | URI                                     | Message(JSON) format     | Description                                                                |
+| :---   | :---                                    | :---                     | :---                                                                       |
+| POST   | /api/classifier/general/{device}        | { 'article' : 'string' } | Classify the article to determine the possibilities for the label          |
+| POST   | /api/classifier/binary/{device}/{label} | { 'article' : 'string' } | Classify the article to determine the possibilities for each of the labels |
+| POST   | /api/summarizer/{device}/{article}      | { 'article' : 'string' } | Summarize news articles and other documents                                |
 
 Parameters:
 
@@ -33,7 +37,7 @@ Parameters:
 | :---      | :---         | :---                         |
 | device    | "cpu"/"cuda" | Switch between CPU/GPU on ML |
 | label     | String       | Label for classification     |
-| article   | String       | Article for analysis       |
+| article   | String       | Article for analysis         |
 
 ## Test
 
@@ -45,6 +49,18 @@ python server/app.py
 Invoke REST API with testing tool (i.e. Postman)
 ```
 localhost:4000/api/classifier/general/cuda/article
+```
+
+## Build Docker file
+
+Create a Docker local registry
+```
+docker run -d -p 5000:5000 --restart=always --name registry registry:2
+```
+
+Build docker image locally
+```
+docker build -f dockerfile -t text-analyzer-app .
 ```
 
 ## Clear Cache
