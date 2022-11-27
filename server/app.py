@@ -5,7 +5,6 @@ from Summarizer import Summarizer
 from Classifier import Classifier
 
 
-news_labels = ['stock market', 'finance', 'economy', 'science', 'politics', 'real estate', 'energy price', 'technology']
 app = Flask(__name__, static_folder=None)
 CORS(app)
 
@@ -17,20 +16,25 @@ def query():
     )
 
 
+@app.route("/api/classifier/labels", methods=['GET'])
+def classify_get_default_labels():
+    return jsonify(labels=['stock market', 'finance', 'economy', 'science', 'politics', 'real estate', 'energy price', 'technology'])
+
+
 @app.route("/api/classifier/general/<device>", methods=['GET', 'POST'])
 def classify_general(device):
     newsClassifier = Classifier(device=device)
     content = request.json
-    results = newsClassifier.classifyGeneral(content['article'], news_labels, multiLabel=True)
+    results = newsClassifier.classifyGeneral(content['article'], content['labels'], multiLabel=True)
     return jsonify(response=True,
                    classification=results)
 
 
-@app.route("/api/classifier/binary/<device>/<label>", methods=['GET', 'POST'])
-def classify_binary(device, label):
+@app.route("/api/classifier/binary/<device>", methods=['GET', 'POST'])
+def classify_binary(device):
     newsClassifier = Classifier(device=device)
     content = request.json
-    results = newsClassifier.classifyBinary(content['article'], label)
+    results = newsClassifier.classifyBinary(content['article'], content['label'])
     return jsonify(response=True,
                    classification=results)
 
