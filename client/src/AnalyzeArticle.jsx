@@ -1,9 +1,11 @@
-import { React, useState } from 'react';
+import { React, useEffect, useState } from 'react';
+import Dropdown from "./Dropdown";
 
 const SERVER_HOST = process.env.REACT_APP_SERVER_HOST;
 
 const AnalyzeArticle = () => {
     const [response, setResponse] = useState(undefined);
+    const [selectedOption, setSelectedOption] = useState(undefined);
 
     const {
         device,
@@ -12,6 +14,8 @@ const AnalyzeArticle = () => {
         setAnalyze,
         label,
         setLabel,
+        labelList,
+        setLabelList,
         article,
         setArticle,
     } = useArticleAnalysis({ });
@@ -20,16 +24,25 @@ const AnalyzeArticle = () => {
         event.preventDefault();
         
         if (analyze != null && device != null) {
-            if (analyze == 'summarizer') {
+            if (analyze === 'summarizer') {
                 SummarizeArticle({ article, device });
             } else {
-                if (label == null) {
+                if (selectedOption == null || selectedOption == '') {
                     ClassifyArticle({ device, article });
                 } else {
-                    ClassifyArticleWithLabel({ device, label, article });
+                    ClassifyArticleWithLabel({ device, selectedOption, article });
                 }
             }
         }    
+    };
+
+    const selectLabel = (event) => {
+        setSelectedOption(event.value);
+    }
+
+    const addLabel = (event) => {
+        const size = labelList.length;
+        labelList[size] = {label: `${label}`, value: `${label}`}
     };
 
     async function SummarizeArticle({ device, article }) {
@@ -44,13 +57,13 @@ const AnalyzeArticle = () => {
         .catch(error => JSON.stringify({ error: error}));
     }
     
-    async function ClassifyArticleWithLabel({ device, label, article }) {
+    async function ClassifyArticleWithLabel({ device, selectedOption, article }) {
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ article: `${article}` })
+            body: JSON.stringify({ article: `${article}`, label: `${selectedOption}`})
         }
-        fetch(`${SERVER_HOST}/api/classifier/binary/${device}/${label}`, requestOptions)
+        fetch(`${SERVER_HOST}/api/classifier/binary/${device}`, requestOptions)
         .then(response => response.json())
         .then(result => setResponse(result['classification']))
         .catch(error => JSON.stringify({ error: error}));
@@ -60,7 +73,7 @@ const AnalyzeArticle = () => {
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ article: `${article}` })
+            body: JSON.stringify({ article: `${article}`, labels: JSON.stringify(labelList) })
         }
         fetch(`${SERVER_HOST}/api/classifier/general/${device}`, requestOptions)
         .then(response => response.json())
@@ -73,7 +86,6 @@ const AnalyzeArticle = () => {
             <div className='analyze-form-container'>
                 <form onSubmit={handleAnalyze}>
                     <h2>Paste an article for analyzing to summarize</h2>
-                    <div></div>
                     <table className="analyze-form-tbl">
                         <tbody>
                             <tr>
@@ -94,10 +106,16 @@ const AnalyzeArticle = () => {
                                     </select>
                                 </td>
                             </tr>
+                            <tr>
+                                <td>
+                                    <Dropdown placeHolder="Select label..." options={labelList} onChange={selectLabel}/>
+                                </td>
+                            </tr>
                             <tr id="classifyLabelInput">
                                 <td>
-                                    Label:
+                                    Add Label:
                                     <input type="text" id="classifyLabel" onChange={(event) => setLabel(event.target.value)}></input>
+                                    <button onClick={addLabel}>Add</button>
                                 </td>
                             </tr>
                             <tr>
@@ -127,6 +145,13 @@ export const useArticleAnalysis = ({ defaults }) => {
     const [analyze, setAnalyze] = useState(defaults?.device ? defaults.device : 'summarizer');
     const [label, setLabel] = useState(defaults?.device ? defaults.device : 'economy');
     const [article, setArticle] = useState(defaults?.device ? defaults.device : 'sample article');
+    const [labelList, setLabelList] = useState(undefined);
+
+    useEffect(() => {
+        fetch(`${SERVER_HOST}/api/classifier/labels`)
+        .then(response => response.json())
+        .then(data => setLabelList(data['labels']))
+    }, []);
 
     return {
         device,
@@ -135,6 +160,8 @@ export const useArticleAnalysis = ({ defaults }) => {
         setAnalyze,
         label,
         setLabel,
+        labelList,
+        setLabelList,
         article,
         setArticle,
     }

@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+import json
 
 from Summarizer import Summarizer
 from Classifier import Classifier
@@ -18,14 +19,25 @@ def query():
 
 @app.route("/api/classifier/labels", methods=['GET'])
 def classify_get_default_labels():
-    return jsonify(labels=['stock market', 'finance', 'economy', 'science', 'politics', 'real estate', 'energy price', 'technology'])
+    return jsonify(labels=[{'value': 'stock market', 'label': 'stock market'},
+                           {'value': 'finance', 'label': 'finance'},
+                           {'value': 'economy', 'label': 'economy'},
+                           {'value': 'science', 'label': 'science'},
+                           {'value': 'politics', 'label': 'politics'},
+                           {'value': 'real estate', 'label': 'real estate'},
+                           {'value': 'energy price', 'label': 'energy price'},
+                           {'value': 'technology', 'label': 'technology'}])
 
 
 @app.route("/api/classifier/general/<device>", methods=['GET', 'POST'])
 def classify_general(device):
     newsClassifier = Classifier(device=device)
     content = request.json
-    results = newsClassifier.classifyGeneral(content['article'], content['labels'], multiLabel=True)
+    labels = json.loads(content['labels'])
+    values = []
+    for label in labels:
+        values.append(label['value'])
+    results = newsClassifier.classifyGeneral(content['article'], values, multiLabel=True)
     return jsonify(response=True,
                    classification=results)
 
