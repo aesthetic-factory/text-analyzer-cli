@@ -25,11 +25,12 @@ pip list --format=freeze > requirements.txt
 
 REST API currently provided in the web service
 
-| Method | URI                                     | Message(JSON) format     | Description                                                                |
-| :---   | :---                                    | :---                     | :---                                                                       |
-| POST   | /api/classifier/general/{device}        | { 'article' : 'string' } | Classify the article to determine the possibilities for the label          |
-| POST   | /api/classifier/binary/{device}/{label} | { 'article' : 'string' } | Classify the article to determine the possibilities for each of the labels |
-| POST   | /api/summarizer/{device}/{article}      | { 'article' : 'string' } | Summarize news articles and other documents                                |
+| Method | URI                                     | Message(JSON) format                                                        | Description                                                                |
+| :---   | :---                                    | :---                                                                        | :---                                                                       |
+| GET    | /api/classifier/labels                  | {}                                                                          | Get default list of labels for classification                              |
+| POST   | /api/classifier/general/{device}        | { 'article' : 'string', 'labels' : { 'value': 'string', 'label': 'string' } | Classify the article to determine the possibilities for the label          |
+| POST   | /api/classifier/binary/{device}/{label} | { 'article' : 'string', 'label' : 'string' }                                | Classify the article to determine the possibilities for each of the labels |
+| POST   | /api/summarizer/{device}/{article}      | { 'article' : 'string' }                                                    | Summarize news articles and other documents                                |
 
 Parameters:
 
